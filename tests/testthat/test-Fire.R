@@ -251,7 +251,7 @@ test_that('futures can be added and called', {
         }
     })
     expect_message(app$ignite(), '10')
-
+    
     skip_on_os('windows')
     app <- Fire$new()
     id <- app$time({
