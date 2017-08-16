@@ -1,11 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-fiery
-=====
+<img src="man/figures/fiery_logo.png"/>
 
 [![Travis-CI Build Status](https://travis-ci.org/thomasp85/fiery.svg?branch=master)](https://travis-ci.org/thomasp85/fiery) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/thomasp85/fiery?branch=master&svg=true)](https://ci.appveyor.com/project/thomasp85/fiery) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-ago/fiery)](https://cran.r-project.org/package=fiery) [![CRAN\_Download\_Badge](http://cranlogs.r-pkg.org/badges/fiery)](https://cran.r-project.org/package=fiery) [![Coverage Status](https://img.shields.io/codecov/c/github/thomasp85/fiery/master.svg)](https://codecov.io/github/thomasp85/fiery?branch=master)
 
-Fiery is a flexible and lighweight framework for building web servers in R. It is relatively unoppinionated about how you chose to build your server logic and supports any use case, from serving static files to being used as a base for a model-view-controller based setup.
+Fiery is a flexible and lightweight framework for building web servers in R. It is relatively unopinionated about how you chose to build your server logic and supports many use cases, from serving static files to being used as a base for a model-view-controller based setup.
 
 ### The shiny elephant in the room
 
@@ -28,31 +27,29 @@ From the above it is quite clear that Fiery to a higher degree gives you the cho
 
 *So how is this different from [httpuv](https://github.com/rstudio/httpuv)?*
 
-Now we're getting somewhere! httpuv is sitting in the bottom of the stack for both Shiny and Fiery, but where Shiny build an elaborate, oppinionated and complete framework on top of httpuv, Fiery "merely" adds a lot of convenience to running a httpuv based web server. You could say that Fiery "sits between" httpuv and Shiny, and that Shiny (or an alternative framework) could in theory be build on top of Fiery.
+Now we're getting somewhere! httpuv is sitting in the bottom of the stack for both Shiny and Fiery, but where Shiny build an elaborate, opinionated and complete framework on top of httpuv, Fiery "merely" adds a lot of convenience to running a httpuv based web server. You could say that Fiery *sits between* httpuv and Shiny, and that Shiny (or an alternative framework) could in theory be build on top of Fiery.
 
 How to install this
 -------------------
 
-Currently fiery exists on GitHub only and should be installed using devtools:
+Install the release from CRAN using `install.packages('fiery')` or get the development version directly from GitHub using `devtools`:
 
 ``` r
-if (!require(devtools)) {
-    install.packages('devtools')
-}
+# install.packages('devtools')
 devtools::install_github('thomasp85/fiery')
 ```
-
-A CRAN submission is intended eventually though...
 
 Design
 ------
 
-Fiery is designed around a clear server life-cycle with events being triggered at specific points during the life-cycle that will call the handlers attached to these events. In addition to the life-cycle events, it is possible to trigger custom events and attach handlers to these as well. Fiery is designed with modularity in mind so that plugins can be developed for different tasks and mixed and matched to suit the specific project. The first plugin is [routr](https://github.com/thomasp85/routr), which I'm developing in parallel and which provides powerful routing of HTTP requests and WebSocket messages.
+Fiery is designed around a clear server life-cycle with events being triggered at specific points during the life-cycle that will call the handlers attached to these events. In addition to the life-cycle events, it is possible to trigger custom events and attach handlers to these as well. Fiery is designed with modularity in mind so that plugins can be developed for different tasks and mixed and matched to suit the specific project.
+
+While the intro might indicate that fiery is difficult to use, this is not the case. Much of the hard work of handling http requests has been encapsulated in the [`reqres`](https://github.com/thomasp85/reqres) that fiery uses to handle http requests and responses. Further, A plugin that will often be used is [`routr`](https://github.com/thomasp85/routr), which provides powerful routing of HTTP requests, thus simplifying the server logic even more.
 
 A minimal example
 -----------------
 
-Following is a very *Hello World*-ish example of a fiery app, that showcases some of the different life-cycle events:
+Following is a very *Hello World*-ish example of a fiery app (sans `routr`), that showcases some of the different life-cycle events:
 
 ``` r
 library(fiery)
@@ -60,7 +57,7 @@ library(fiery)
 # Create a New App
 app <- Fire$new()
 
-# Setup the data everytime it starts
+# Setup the data every time it starts
 app$on('start', function(server, ...) {
     server$set_data('visits', 0)
     server$set_data('cycles', 0)
@@ -77,12 +74,11 @@ app$on('before-request', function(server, ...) {
 })
 
 # Handle requests
-app$on('request', function(server, ...) {
-    list(
-        status = 200L,
-        headers = list('Content-Type' = 'text/html'),
-        body = paste('This is indeed a test. You are number', server$get_data('visits'))
-    )
+app$on('request', function(server, request, ...) {
+    response <- request$respond()
+    response$status <- 200L
+    response$body <- paste0('<h1>This is indeed a test. You are number ', server$get_data('visits'), '</h1>')
+    response$type <- 'html'
 })
 
 # Show number of requests in the console
@@ -107,6 +103,7 @@ app$on('end', function(server) {
 })
 
 app$ignite(showcase = TRUE)
+#> Fire started at 127.0.0.1:8080
 #> 1
 #> Ending...
 #> Goodbye
@@ -117,9 +114,4 @@ In general much of the logic will happen in the `request` and `message` handlers
 Feedback
 --------
 
-I would love some feedback on this - open an issue or reach out to me on [twitter](https://twitter.com/thomasp85). This is still a work-in-progress so if you want to influence the overall design, this is the moment to shout out.
-
-Roadmap
--------
-
-Fiery is intended to be minimal and lightweight so many features will be delegated to plugins. On top of my list for fiery features are infrastructure that allows for delayed, timed and asynchronous code execution, as well as including some small plugins for standard functionality
+I would love some feedback on this - open an issue or reach out to me on [twitter](https://twitter.com/thomasp85).

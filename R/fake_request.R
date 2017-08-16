@@ -21,6 +21,9 @@ InputStreamFake <- R6Class('InputStreamFake',
             private$length <- length(content)
             seek(private$content, 0)
         },
+        finalize = function() {
+            try(close(private$content), silent = TRUE)
+        },
         read_lines = function(n = -1L) {
             readLines(private$content, n, warn = FALSE)
         },
@@ -38,7 +41,7 @@ InputStreamFake <- R6Class('InputStreamFake',
             seek(private$content, 0)
         },
         close = function() {
-            close(private$content)
+            try(close(private$content), silent = TRUE)
         }
     ),
     private = list(
@@ -83,16 +86,15 @@ ErrorStreamFake <- R6Class('ErrorStreamFake',
 
 #' Create a fake request to use in testing
 #' 
-#' This function creates a new request for a specific ressource defined by a 
-#' URL. It mimicks the format of the requests provided through httpuv, meaning
-#' that it can be used in place for the requests send to the 'before-request',
-#' 'request', and 'after-request' handlers. This is only provided so that 
+#' This function creates a new request for a specific resource defined by a 
+#' URL. It mimics the format of the requests provided through httpuv, meaning 
+#' that it can be used in place for the requests send to the `before-request`, 
+#' `request`, and `after-request` handlers. This is only provided so that 
 #' handlers can be tested without having to start up a server.
 #' 
-#' @param url A complete url for the ressource the request should ask for
+#' @param url A complete url for the resource the request should ask for
 #' 
-#' @param method The request type (get, post, put, etc). Defaults to 
-#' \code{"get"}
+#' @param method The request type (get, post, put, etc). Defaults to `"get"`
 #' 
 #' @param appLocation A string giving the first part of the url path that should
 #' be stripped from the path
@@ -103,12 +105,13 @@ ErrorStreamFake <- R6Class('ErrorStreamFake',
 #' 
 #' @param ... Additional name-value pairs that should be added to the request
 #' 
-#' @return A ROOK-compliant environment
+#' @return A Rook-compliant environment
 #' 
 #' @importFrom utils packageVersion
 #' @importFrom assertthat assert_that is.scalar
 #' 
 #' @export
+#' @keywords internal
 #' 
 #' @examples 
 #' req <- fake_request(
@@ -179,7 +182,7 @@ fake_request <- function(url, method = 'get', appLocation = '', content = '', he
 split_url <- function(url) {
     matches <- stri_match(
         url,
-        regex = '^(([^:/?#]+):)?(//([^/?#:]*)(:(\\d+))?)?([^?#]*)(\\?([^#]*))?(#(.*))?'
+        regex = '^(([^:/?#]+)://)?(([^/?#:]*)(:(\\d+))?)?([^?#]*)(\\?([^#]*))?(#(.*))?'
     )[1,]
     
     parsedURL <- list(
