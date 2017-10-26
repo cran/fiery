@@ -1,8 +1,8 @@
 Package: fiery
 Type: Package
 Title: A Lightweight and Flexible Web Framework
-Version: 1.0.0
-Date: 2017-09-16
+Version: 1.1.0
+Date: 2017-10-26
 Authors@R: c(
     person('Thomas Lin', 'Pedersen', , 'thomasp85@gmail.com', c('aut', 'cre'))
     )
@@ -15,15 +15,16 @@ Description: A very flexible framework for building server side logic in R. The
     your web app the way you want.
 License: MIT + file LICENSE
 Imports: R6, assertthat, httpuv, uuid, utils, stringi, future, later,
-        stats, desc, reqres
-Collate: 'aaa.R' 'HandlerStack.R' 'Fire.R' 'FutureStack.R'
-        'event_doc.R' 'fake_request.R' 'fiery-package.R' 'plugin_doc.R'
+        stats, desc, reqres, glue, crayon
+Collate: 'loggers.R' 'aaa.R' 'HandlerStack.R' 'Fire.R' 'FutureStack.R'
+        'delay_doc.R' 'event_doc.R' 'fake_request.R' 'fiery-package.R'
+        'plugin_doc.R'
 RoxygenNote: 6.0.1
 Suggests: testthat, covr
 URL: https://github.com/thomasp85/fiery
 BugReports: https://github.com/thomasp85/fiery/issues
 NeedsCompilation: no
-Packaged: 2017-08-16 08:35:04 UTC; thomas
+Packaged: 2017-10-26 07:39:53 UTC; thomas
 Author: Thomas Lin Pedersen [aut, cre]
 Repository: CRAN
-Date/Publication: 2017-08-16 08:58:53 UTC
+Date/Publication: 2017-10-26 08:00:31 UTC

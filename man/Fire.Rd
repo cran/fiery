@@ -47,6 +47,7 @@ object is desired, use the \code{clone()} method.
 \item{\code{trigger_dir}}{A valid folder where trigger files can be put when running a blocking server (defaults to \code{NULL})}
 \item{\code{plugins}}{A named list of the already attached plugins. \strong{Static} - can only be modified using the \code{attach()} method.}
 \item{\code{root}}{The location of the app. Setting this will remove the root value from requests (or decline them with \code{400} if the request does not match the root). E.g. the path of a request will be changed from \code{/demo/test} to \code{/test} if \code{root == '/demo'}}
+\item{\code{access_log_format}}{A \link[glue:glue]{glue} string defining how requests will be logged. For standard formats see \link{common_log_format} and \link{combined_log_format}. Defaults to the \emph{Common Log Format}}
 }
 }
 
@@ -59,10 +60,12 @@ object is desired, use the \code{clone()} method.
 \item{\code{resume(block = TRUE, showcase = FALSE, ...)}}{Another less dramatic synonym, this time for \code{reignite()}}
 \item{\code{extinguish()}}{Stops a running server}
 \item{\code{stop()}}{Boring synonym for \code{extinguish()}}
+\item{\code{is_running()}}{Check if the server is currently running}
 \item{\code{on(event, handler, pos = NULL)}}{Add a \code{handler} function to to an \code{event} at the given position (\code{pos}) in the handler stack. Returns a string uniquely identifying the handler. See the \link[=events]{event documentation} for more information.}
 \item{\code{off(handlerId)}}{Remove the handler tied to the given \code{id}}
 \item{\code{trigger(event, ...)}}{Triggers an \code{event} passing the additional arguments to the potential handlers}
 \item{\code{send(message, id)}}{Sends a websocket \code{message} to the client with the given \code{id}, or to all connected clients if \code{id} is missing}
+\item{\code{log(event, message, request, ...)}}{Send a \code{message} to the logger. The \code{event} defines the type of message you are passing on, while \code{request} is the related \code{Request} object if applicable.}
 \item{\code{close_ws_con(id)}}{Closes the websocket connection started from the client with the given \code{id}, firing the \code{websocket-closed} event}
 \item{\code{attach(plugin, ..., force = FALSE)}}{Attaches a \code{plugin} to the server. See the \link[=plugins]{plugin documentation} for more information. Plugins can only get attached once unless \code{force = TRUE}}
 \item{\code{has_plugin(name)}}{Check whether a plugin with the given \code{name} has been attached}
@@ -72,10 +75,12 @@ object is desired, use the \code{clone()} method.
 \item{\code{remove_data(name)}}{Removes the data with the given \code{name} from the internal data store}
 \item{\code{time(expr, then, after, loop = FALSE)}}{Add a timed evaluation (\code{expr}) that will be evaluated after the given number of seconds (\code{after}), potentially repeating if \code{loop = TRUE}. After the expression has evaluated the \code{then} function will get called with the result of the expression and the server object as arguments.}
 \item{\code{remove_time(id)}}{Removes the timed evaluation identified by the \code{id} (returned when adding the evaluation)}
-\item{\code{delay(expr, then)}}{As \code{time()} except the \code{expr} is evaluated immediately at the end of the loop cycle}
+\item{\code{delay(expr, then)}}{Similar to \code{time()}, except the \code{expr} is evaluated immediately at the end of the loop cycle (\link[=delay_doc]{see here} for detailed explanation of delayed evaluation in fiery).}
 \item{\code{remove_delay(id)}}{Removes the delayed evaluation identified by the \code{id}}
 \item{\code{async(expr, then)}}{As \code{delay()} and \code{time()} except the expression is evaluated asynchronously. The progress of evaluation is checked at the end of each loop cycle}
 \item{\code{remove_async(id)}}{Removes the async evaluation identified by the \code{id}. The evaluation is not necessarily stopped but the then function will not get called.}
+\item{\code{set_client_id_converter(converter)}}{Sets the function that converts an HTTP request into a specific client id}
+\item{\code{set_logger(logger)}}{Sets the function that takes care of logging}
 \item{\code{set_client_id_converter(converter)}}{Sets the function that converts an HTTP request into a specific client id}
 \item{\code{clone()}}{Create a copy of the full \code{Fire} object and return that}
 }
