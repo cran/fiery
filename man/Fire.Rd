@@ -12,8 +12,7 @@ contrast to the more well known S3 and S4 systems. A \code{fiery} server is even
 driven, which means that it is build up and manipulated by adding event
 handlers and triggering events. To learn more about the \code{fiery} event model,
 read the \link[=events]{event documentation}. \code{fiery} servers can be modified
-directly or by attaching plugins. As with events, \link[=plugins]{plugins has its own
-documentation}.
+directly or by attaching plugins. As with events, \link[=plugins]{plugins has its own documentation}.
 }
 \section{Initialization}{
 

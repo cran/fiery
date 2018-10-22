@@ -1,6 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<img src="man/figures/fiery_logo.png"/>
+<img src="man/figures/fiery.png"/>
 
 [![Travis-CI Build Status](https://travis-ci.org/thomasp85/fiery.svg?branch=master)](https://travis-ci.org/thomasp85/fiery) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/thomasp85/fiery?branch=master&svg=true)](https://ci.appveyor.com/project/thomasp85/fiery) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-ago/fiery)](https://cran.r-project.org/package=fiery) [![CRAN\_Download\_Badge](http://cranlogs.r-pkg.org/badges/fiery)](https://cran.r-project.org/package=fiery) [![Coverage Status](https://img.shields.io/codecov/c/github/thomasp85/fiery/master.svg)](https://codecov.io/github/thomasp85/fiery?branch=master)
 
@@ -12,7 +12,7 @@ Before going any further I will briefly address what most people are thinking of
 
 *Is this a competing framework to Shiny?*
 
-In a way, yes. Any package that provides functionality for creating web applications in R will be competing for the developers who wish to make web apps. This is of course reinforced by the name of the package, which is a gently jab at Shiny. But mostly no. I believe Shiny and Fiery will appeal to vastly different use cases, in the same way as automakers and motorbike makers are in theory competing for the customers who wish to acquire the means to transport themselves, but would never be seen as truly competing.
+In a way, yes. Any package that provides functionality for creating web applications in R will be competing for the developers who wish to make web apps. This is of course reinforced by the name of the package, which is a gentle jab at Shiny. But mostly no. I believe Shiny and Fiery will appeal to vastly different use cases, in the same way as automakers and motorbike makers are in theory competing for the customers who wish to acquire the means to transport themselves, but would never be seen as truly competing.
 
 *So what is so different about Fiery?*
 
@@ -104,9 +104,11 @@ app$on('end', function(server) {
 
 app$ignite(showcase = TRUE)
 #> Fire started at 127.0.0.1:8080
-#> 1
-#> Ending...
-#> Goodbye
+#> message: 1
+#> message: 2
+#> message: 3
+#> message: 4
+#> message: Goodbye
 ```
 
 In general much of the logic will happen in the `request` and `message` handlers and you are free to ignore the other life-cycle events if they are not needed.

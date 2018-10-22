@@ -127,6 +127,10 @@ ErrorStreamFake <- R6Class('ErrorStreamFake',
 #' 
 #' # ... etc.
 #' 
+#' # Cleaning up connections
+#' rm(req)
+#' gc()
+#' 
 fake_request <- function(url, method = 'get', appLocation = '', content = '', headers = list(), ...) {
   rook <- new.env(parent = emptyenv())
   rook$REQUEST_METHOD <- toupper(method)
@@ -144,6 +148,8 @@ fake_request <- function(url, method = 'get', appLocation = '', content = '', he
     }
     rook$SCRIPT_NAME <- appLocation
     url$path <- sub(appLocReg, '', url$path)
+  } else {
+    rook$SCRIPT_NAME <- appLocation
   }
   rook$PATH_INFO <- url$path
   rook$QUERY_STRING <- url$query

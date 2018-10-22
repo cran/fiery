@@ -164,7 +164,6 @@ Fire <- R6Class('Fire',
       private$handlers <- new.env(parent = emptyenv())
       private$websockets <- new.env(parent = emptyenv())
       private$client_id <- client_to_id
-      private$logger <- logger_null()
       private$DELAY <- DelayStack$new(self)
       private$TIME <- TimeStack$new(self)
       private$ASYNC <- AsyncStack$new(self)
@@ -338,15 +337,15 @@ Fire <- R6Class('Fire',
     set_logger = function(logger) {
       assert_that(is.function(logger))
       assert_that(has_args(logger, c('event', 'message', 'request', '...')))
-      private$logger <- logger
+      private$logger <- list(logger)
       invisible(NULL)
     },
     log = function(event, message, request = NULL, ...) {
       time <- Sys.time()
       if (private$running) {
-        private$LOG_QUEUE$add(NULL, function(...) private$logger(event, message, request, time, ...))
+        private$LOG_QUEUE$add(NULL, function(...) private$logger[[1]](event, message, request, time, ...))
       } else {
-        private$logger(event, message, request, time, ...)
+        private$logger[[1]](event, message, request, time, ...)
       }
       invisible(NULL)
     },
@@ -453,7 +452,7 @@ Fire <- R6Class('Fire',
     websockets = NULL,
     server = NULL,
     client_id = NULL,
-    logger = NULL,
+    logger = list(logger_null()),
     
     DELAY = NULL,
     TIME = NULL,
@@ -561,7 +560,7 @@ Fire <- R6Class('Fire',
       }
     },
     mount_request = function(req) {
-      if (!grepl(paste0('^', self$root, '(/|$)'), req$PATH_INFO)) stop('URL not matching mount point', call. = FALSE)
+      if (req$SCRIPT_NAME != self$root && !grepl(paste0('^', self$root, '(/|$)'), req$PATH_INFO)) stop('URL not matching mount point', call. = FALSE)
       req$SCRIPT_NAME <- self$root
       req$PATH_INFO <- sub(paste0('^', self$root, ''), '', req$PATH_INFO)
       req
@@ -694,7 +693,7 @@ Fire <- R6Class('Fire',
     p_trigger = function(event, ...) {
       if (!is.null(private$handlers[[event]])) {
         res <- private$safe_call(private$handlers[[event]]$dispatch(...))
-        for (val in res) if (is.error_cond(val)) self$log('error', conditionMessage(val))
+        for (val in res) if (is.error_cond(val)) self$log('error', paste0(conditionMessage(val), ' from ', deparse(conditionCall(val), nlines = 1)))
       } else {
         res <- setNames(list(), character())
       }
@@ -722,14 +721,14 @@ Fire <- R6Class('Fire',
     safe_call = function(expr) {
       withCallingHandlers(
         tryCatch(expr, error = function(e) {
-          self$log('error', conditionMessage(e))
+          self$log('error', paste0(conditionMessage(e), ' from ', deparse(conditionCall(e), nlines = 1)))
         }),
         warning = function(w) {
-          self$log('warning', conditionMessage(w))
+          self$log('warning', paste0(conditionMessage(w), ' from ', deparse(conditionCall(w), nlines = 1)))
           invokeRestart('muffleWarning')
         },
         message = function(m) {
-          self$log('message', conditionMessage(m))
+          self$log('message', paste0(conditionMessage(m), ' from ', deparse(conditionCall(m), nlines = 1)))
           invokeRestart('muffleMessage')
         }
       )
