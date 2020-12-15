@@ -1,3 +1,7 @@
+# fiery 1.1.3
+
+* Avoid tests that fails on some CRAN machines due to new testthat version
+
 # fiery 1.1.2
 
 * Fix bug where delayed logging would result in wrong message being logged (#39)

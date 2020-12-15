@@ -1,7 +1,7 @@
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  app$attach(plugin)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  plugin <- list(
 #    on_attach = function(server) {
 #      router <- server$plugins$request_routr
@@ -16,7 +16,7 @@
 #    require = 'request_routr'
 #  )
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  plugin <- list(
 #    on_attach = function(server) {
 #      if (!server$has_plugin('request_routr')) {
