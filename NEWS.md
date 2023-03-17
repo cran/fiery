@@ -1,3 +1,8 @@
+# fiery 1.2.0
+
+* Update to work with new future release
+* Move from assertthat to rlang based type checking
+
 # fiery 1.1.4
 
 * General upkeep (new CI, redocument, etc)
