@@ -48,6 +48,7 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -460,6 +461,14 @@ is send to a client. The handlers will receive the app itself as the
 <code>server</code> argument, the client id as the <code>id</code>
 argument and the send message as the <code>message</code> argument. Any
 return value is discarded.</li>
+<li><code>websocket-opened</code>: This event is triggered when a client
+tries to establish a WebSocket connection to the server. The handler
+will receive the app itself as the <code>server</code> argument, the
+client id as the <code>id</code> argument, and the WebSocket class
+provided by httpuv as the <code>connection</code> argument. Any return
+value is discarded. Since this event exposes logic from the httpuv
+package through the <code>connection</code> argument it is liable to
+changes in the httpuv API.</li>
 <li><code>websocket-closed</code>: This event will be triggered every
 time a websocket connection is closed. The handlers will receive the app
 itself as the <code>server</code> argument, the client id as the

@@ -8,6 +8,7 @@
 \alias{logger_console}
 \alias{logger_file}
 \alias{logger_switch}
+\alias{logger_logger}
 \alias{common_log_format}
 \alias{combined_log_format}
 \title{App Logging}
@@ -25,6 +26,8 @@ logger_file(file, format = "{time} - {event}: {message}")
 
 logger_switch(..., default = logger_null())
 
+logger_logger(default_level = "INFO")
+
 common_log_format
 
 combined_log_format
@@ -39,6 +42,9 @@ semantics as \link[base:switch]{switch} is used so it is possible to let events
 \emph{fall through} e.g. \code{logger_switch(error =, warning = logger_file('errors.log'))}.}
 
 \item{default}{A catch-all logger for use with events not defined in \code{...}}
+
+\item{default_level}{The log level to use for events that are not \code{request},
+\code{websocket}, \code{message}, \code{warning}, or \code{error}}
 }
 \description{
 \code{fiery} has a build in logging mechanism that lets you capture event
@@ -80,7 +86,7 @@ colour coding depending on the content if the console supports it.
 As a last possibility it is possible to use different loggers dependent on
 the event by using the switch logger:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{app$set_logger(logger_switch(warning =, 
+\if{html}{\out{<div class="sourceCode">}}\preformatted{app$set_logger(logger_switch(warning =,
                              error = logger_file('errors.log),
                              default = logger_file('info.log')))
 }\if{html}{\out{</div>}}

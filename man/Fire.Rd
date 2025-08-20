@@ -99,9 +99,23 @@ app$ignite(showcase = TRUE)
 
 \item{\code{plugins}}{A named list of the already attached plugins. \strong{Read Only} - can only be modified using the \code{attach()} method.}
 
+\item{\code{data_store}}{Access the environment that holds the global data store}
+
 \item{\code{root}}{The location of the app. Setting this will remove the root value from requests (or decline them with \code{400} if the request does not match the root). E.g. the path of a request will be changed from \verb{/demo/test} to \verb{/test} if \code{root == '/demo'}}
 
 \item{\code{access_log_format}}{A \link[glue:glue]{glue} string defining how requests will be logged. For standard formats see \link{common_log_format} and \link{combined_log_format}. Defaults to the \emph{Common Log Format}}
+
+\item{\code{key}}{The encryption key to use for request/response encryption}
+
+\item{\code{session_cookie_settings}}{Get or set the session cookie settings}
+
+\item{\code{trust}}{A logical indicating whether incoming requests are trusted.}
+
+\item{\code{compression_limit}}{The size threshold in bytes for trying to
+compress the response body (it is still dependant on content negotiation)}
+
+\item{\code{query_delim}}{The delimeter used to split array-type query arguments
+when parsing the query string}
 }
 \if{html}{\out{</div>}}
 }
@@ -121,6 +135,8 @@ app$ignite(showcase = TRUE)
 \item \href{#method-Fire-trigger}{\code{Fire$trigger()}}
 \item \href{#method-Fire-send}{\code{Fire$send()}}
 \item \href{#method-Fire-close_ws_con}{\code{Fire$close_ws_con()}}
+\item \href{#method-Fire-serve_static}{\code{Fire$serve_static()}}
+\item \href{#method-Fire-exclude_static}{\code{Fire$exclude_static()}}
 \item \href{#method-Fire-attach}{\code{Fire$attach()}}
 \item \href{#method-Fire-has_plugin}{\code{Fire$has_plugin()}}
 \item \href{#method-Fire-header}{\code{Fire$header()}}
@@ -137,6 +153,7 @@ app$ignite(showcase = TRUE)
 \item \href{#method-Fire-set_logger}{\code{Fire$set_logger()}}
 \item \href{#method-Fire-log}{\code{Fire$log()}}
 \item \href{#method-Fire-is_running}{\code{Fire$is_running()}}
+\item \href{#method-Fire-safe_call}{\code{Fire$safe_call()}}
 \item \href{#method-Fire-test_request}{\code{Fire$test_request()}}
 \item \href{#method-Fire-test_header}{\code{Fire$test_header()}}
 \item \href{#method-Fire-test_message}{\code{Fire$test_message()}}
@@ -200,7 +217,9 @@ Begin running the server. Will trigger the \code{start} event
 \describe{
 \item{\code{block}}{Should the console be blocked while running (alternative is to run in the background)}
 
-\item{\code{showcase}}{Should the default browser open up at the server address}
+\item{\code{showcase}}{Should the default browser open up at the server address.
+If \code{TRUE} then a browser opens at the root of the app. If a string the
+string is used as a path to add to the root before opening}
 
 \item{\code{...}}{Arguments passed on to the \code{start} handler}
 
@@ -286,7 +305,7 @@ Synonymous method to \code{extinguish()}
 \subsection{Method \code{on()}}{
 Add a handler to an event. See the \href{https://fiery.data-imaginist.com/articles/events.html}{\emph{The event cycle in fiery} vignette} for more information.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Fire$on(event, handler, pos = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Fire$on(event, handler, pos = NULL, id = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -297,11 +316,13 @@ Add a handler to an event. See the \href{https://fiery.data-imaginist.com/articl
 \item{\code{handler}}{The handler function that should be triggered}
 
 \item{\code{pos}}{The position in the handler stack to place it at. \code{NULL} will place it at the end.}
+
+\item{\code{id}}{An optional id to use to identify the handler}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A unique string identifying the handler
+A unique string identifying the handler (either \code{id} or generated for you)
 }
 }
 \if{html}{\out{<hr>}}
@@ -380,12 +401,66 @@ Close a Websocket connection. Will trigger the \code{websocket-closed} event
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Fire-serve_static"></a>}}
+\if{latex}{\out{\hypertarget{method-Fire-serve_static}{}}}
+\subsection{Method \code{serve_static()}}{
+Serve a file or directory of files at a specified url path. Requests matching a file on the system never enters into the request loop but are served directly (and fast). Due to this, logging for these requests are also turned off
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Fire$serve_static(
+  at,
+  path,
+  use_index = TRUE,
+  fallthrough = FALSE,
+  html_charset = "utf-8",
+  headers = list(),
+  validation = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{at}}{The url path to listen to requests on}
+
+\item{\code{path}}{The path to the file or directory on the file system}
+
+\item{\code{use_index}}{Should an \code{index.html} file be served if present when a client requests the folder}
+
+\item{\code{fallthrough}}{Should requests that doesn't match a file enter the request loop or have a 404 response send directly}
+
+\item{\code{html_charset}}{The charset to report for serving html files}
+
+\item{\code{headers}}{A list of headers to add to the response. Will be combined with the global headers of the app}
+
+\item{\code{validation}}{An optional validation pattern. Presently, the only type of validation supported is an exact string match of a header. For example, if validation is \code{"abc" = "xyz"}, then HTTP requests must have a header named \code{abc} (case-insensitive) with the value \code{"xyz"} (case-sensitive). If a request does not have a matching header, than httpuv will give a 403 Forbidden response. If \code{character(0)} (the default), then no validation check will be performed.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Fire-exclude_static"></a>}}
+\if{latex}{\out{\hypertarget{method-Fire-exclude_static}{}}}
+\subsection{Method \code{exclude_static()}}{
+Exclude a url path from serving static content. Only meaningful to exclude sub paths of path that are set to serve static content
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Fire$exclude_static(at)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{at}}{The url path to exclude from static serving. Request to this path will enter the normal request loop}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Fire-attach"></a>}}
 \if{latex}{\out{\hypertarget{method-Fire-attach}{}}}
 \subsection{Method \code{attach()}}{
 Attach a plugin to the app. See the \href{https://fiery.data-imaginist.com/articles/plugins.html}{\emph{Creating and using fiery plugins} vignette} for more information
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Fire$attach(plugin, ..., force = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Fire$attach(plugin, ..., name = NULL, force = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -394,6 +469,8 @@ Attach a plugin to the app. See the \href{https://fiery.data-imaginist.com/artic
 \item{\code{plugin}}{The plugin to attach}
 
 \item{\code{...}}{Arguments to pass into the plugins \code{on_attach()} method}
+
+\item{\code{name}}{Optional name for the plugin. If omitted \code{plugin$name} will be used instead}
 
 \item{\code{force}}{If the plugin has already been attached an error is thrown, unless \code{force = TRUE} which tells the app to reattach it}
 }
@@ -499,7 +576,7 @@ Remove data from the global data store
 \if{html}{\out{<a id="method-Fire-time"></a>}}
 \if{latex}{\out{\hypertarget{method-Fire-time}{}}}
 \subsection{Method \code{time()}}{
-Add a timed evaluation that will be evaluated after the given number of seconds. See the \href{https://fiery.data-imaginist.com/articles/delayed.html}{\emph{Delaying code execution in Fiery} vignette} for more information
+Add a timed evaluation that will be evaluated after the given number of seconds.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Fire$time(expr, then, after, loop = FALSE)}\if{html}{\out{</div>}}
 }
@@ -542,7 +619,7 @@ Remove a timed evaluation
 \if{html}{\out{<a id="method-Fire-delay"></a>}}
 \if{latex}{\out{\hypertarget{method-Fire-delay}{}}}
 \subsection{Method \code{delay()}}{
-Add a delayed evaluation to be evaluated immediately at the end of the loop cycle. See the \href{https://fiery.data-imaginist.com/articles/delayed.html}{\emph{Delaying code execution in Fiery} vignette} for more information
+Add a delayed evaluation to be evaluated immediately at the end of the loop cycle.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Fire$delay(expr, then)}\if{html}{\out{</div>}}
 }
@@ -581,7 +658,7 @@ Remove a delayed evaluation
 \if{html}{\out{<a id="method-Fire-async"></a>}}
 \if{latex}{\out{\hypertarget{method-Fire-async}{}}}
 \subsection{Method \code{async()}}{
-Add an asynchronous evaluation to be evaluated in another process without blocking the server. See the \href{https://fiery.data-imaginist.com/articles/delayed.html}{\emph{Delaying code execution in Fiery} vignette} for more information
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Add an asynchronous evaluation to be evaluated in another process without blocking the server. This function has been deprecated in favor of using your own async framework of choice, e.g. \href{https://mirai.r-lib.org}{mirai} or \href{https://rstudio.github.io/promises/}{promises}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Fire$async(expr, then)}\if{html}{\out{</div>}}
 }
@@ -656,7 +733,15 @@ Sets the logging function to use
 \subsection{Method \code{log()}}{
 Log a message with the logger attached to the app. See \link{loggers} for build in functionality
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Fire$log(event, message, request = NULL, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Fire$log(
+  event,
+  message,
+  request = NULL,
+  ...,
+  .logcall = sys.call(),
+  .topcall = sys.call(-1),
+  .topenv = parent.frame()
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -669,6 +754,12 @@ Log a message with the logger attached to the app. See \link{loggers} for build 
 \item{\code{request}}{The \code{Request} object associated with the message, if any.}
 
 \item{\code{...}}{Additional arguments passed on to the logger.}
+
+\item{\code{.logcall}}{The call that send the log request}
+
+\item{\code{.topcall}}{The call in which \code{.logcall} is called from}
+
+\item{\code{.topenv}}{The environment associated with \code{.topcall}}
 }
 \if{html}{\out{</div>}}
 }
@@ -682,6 +773,30 @@ Test if an app is running
 \if{html}{\out{<div class="r">}}\preformatted{Fire$is_running()}\if{html}{\out{</div>}}
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Fire-safe_call"></a>}}
+\if{latex}{\out{\hypertarget{method-Fire-safe_call}{}}}
+\subsection{Method \code{safe_call()}}{
+Evaluate an expression safely, logging any errors, warnings,
+or messages that bubbles up
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Fire$safe_call(expr, request = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{expr}}{An expression to evaluate}
+
+\item{\code{request}}{The request under evaluation, if any. Used in logging}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The value of the expression. If an error is caught, the condition
+object is returned instead
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Fire-test_request"></a>}}

@@ -1,3 +1,28 @@
+# fiery 1.3.0
+
+* Added `serve_static()` method to `Fire` to serve a directory of static files
+  directly outside the request loop
+* Move code over to rlang style programming
+* Full rewrite of condition handling.
+* Added `logger_logger()` to use the logger package for logging
+* `Fire$log()` now supports cli syntax in the message
+* Support for the `reqres_problem` conditions
+* `Fire$log()` now supports passing in a condition as message
+* Added `Fire$data_store` field to suppleant `Fire$get_data()` and friends. It
+  provides direct acces to the global data store
+* Allow naming plugins when they are attached
+* `showcase` in `Fire$ignite()`/`Fire$run()` can now take a string giving the
+  path to open the browser at.
+* Improve the default session id handling and added `session_id_cookie()` helper
+  function for constructing session ID extractor
+* Deprecate use of future. `Fire$delay()` and `Fire$time()` now uses quosures
+  and `Fire$async()` has been soft deprecated in favor of letting the user use
+  whatever async framework they like
+* Support returning promises in `request` events, and automated error logging
+  from promises in all events
+* Added `websocket-opened` event that allows the user to add a handler that
+  modifies the WebSocket connection when it is established
+
 # fiery 1.2.1
 
 * Fixed a test failure only affecting the CRAN M1 machine
@@ -18,7 +43,7 @@
 # fiery 1.1.2
 
 * Fix bug where delayed logging would result in wrong message being logged (#39)
-* Remove some tests as new later architecture makes certain async operations 
+* Remove some tests as new later architecture makes certain async operations
   untestable (#40)
 * pkgdown site now available at <https://fiery.data-imaginist.com>
 
@@ -38,23 +63,23 @@
   request and message handling (#18).
 * Added `access_log_format` field to define how requests are logged.
 * Added `is_running()` method to query the state of the server.
-* Capture errors in each handler for events and delayed execution, so that 
+* Capture errors in each handler for events and delayed execution, so that
   evaluation of the other handlers are unaffected (#20).
 * Document the use of delayed evaluation. See `?delay_doc`
 
 # fiery 1.0.0
 
-* `Fire$new()` now takes a port and host argument to set these fields on 
+* `Fire$new()` now takes a port and host argument to set these fields on
   initialisation. (fixes #5)
-* **BREAKING** Results from before-request and before-message events are now 
-  passed on to the request and message handlers as a list in the `arg_list` 
+* **BREAKING** Results from before-request and before-message events are now
+  passed on to the request and message handlers as a list in the `arg_list`
   argument rather than as single arguments.
 * The host and port are now advertised when a server is started/resumed (#11)
 * Fire objects now has a print method (#12)
-* **BREAKING** fiery now uses the `reqres` Request and Response classes for 
+* **BREAKING** fiery now uses the `reqres` Request and Response classes for
   handling http exchange.
-* **BREAKING** `attach()` now expect a `on_attach()` method rather than a 
-  `onAttach()` method from the plugin. It also expects a `name` field and 
+* **BREAKING** `attach()` now expect a `on_attach()` method rather than a
+  `onAttach()` method from the plugin. It also expects a `name` field and
   optionally a `require` field
 * **BREAKING** The `header` event now expect handlers to return a logical, with
   `TRUE` indicating further processing, and `FALSE` indicating termination.
@@ -62,23 +87,23 @@
   two run modes identical in their life cycle events.
 * **BREAKING** The `after-request` event will no longer pass the response to
   handlers. This can be retrieved from the `request` object.
-* The server can now be mounted at a path, which will strip that path from 
-  request paths thus making the app logic independent on mounting. Use the 
+* The server can now be mounted at a path, which will strip that path from
+  request paths thus making the app logic independent on mounting. Use the
   `root` field to access and change the root location.
-* Websocket connections can now be closed from the server by using the 
+* Websocket connections can now be closed from the server by using the
   `close_ws_con()` method.
-* Better documentation. Events and plugins now has their own documentation 
+* Better documentation. Events and plugins now has their own documentation
   entries (fixes #10).
 * Convert roxygen documentation to md format
 * **BREAKING** fields now uses snake_case rather than camelCase for a more
-  consistent interface. This means `refreshRate` -> `refresh_rate`, 
+  consistent interface. This means `refreshRate` -> `refresh_rate`,
   `triggerDir` -> `trigger_dir`.
 * Switch to MIT License
 * Catch errors in start and resume event handlers
 
 # fiery 0.2.3
 
-* DelayStack uses `sequential` futures with `lazy = TRUE` because previously 
+* DelayStack uses `sequential` futures with `lazy = TRUE` because previously
   used `lazy` futures are deprecated
 
 # fiery 0.2.2
@@ -92,10 +117,10 @@
 for testing
 * Added `header` method to `Fire` for setting global header policies
 * Added standard 4xx responses
-* Added `FutureStack` class and subclasses to capture expressions for later, 
+* Added `FutureStack` class and subclasses to capture expressions for later,
 timed, and async evaluation
-* Added `delay`, `remove_delay`, `time`, `remove_time`, `async`, and 
-`remove_async` methods to `Fire` for adding delayed, timed, and async 
+* Added `delay`, `remove_delay`, `time`, `remove_time`, `async`, and
+`remove_async` methods to `Fire` for adding delayed, timed, and async
 expressions for evaluation
 
 # fiery 0.1.0
