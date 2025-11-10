@@ -1,3 +1,9 @@
+# fiery 1.4.0
+
+* Add support for OpenTelemetry through the otel package
+* Request/Response object are now persistent across header and request logic
+  (#55)
+
 # fiery 1.3.0
 
 * Added `serve_static()` method to `Fire` to serve a directory of static files
@@ -8,8 +14,8 @@
 * `Fire$log()` now supports cli syntax in the message
 * Support for the `reqres_problem` conditions
 * `Fire$log()` now supports passing in a condition as message
-* Added `Fire$data_store` field to suppleant `Fire$get_data()` and friends. It
-  provides direct acces to the global data store
+* Added `Fire$data_store` field to complement `Fire$get_data()` and friends. It
+  provides direct access to the global data store
 * Allow naming plugins when they are attached
 * `showcase` in `Fire$ignite()`/`Fire$run()` can now take a string giving the
   path to open the browser at.
