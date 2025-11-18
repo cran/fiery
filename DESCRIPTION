@@ -1,7 +1,7 @@
 Type: Package
 Package: fiery
 Title: A Lightweight and Flexible Web Framework
-Version: 1.4.0
+Version: 1.4.1
 Authors@R: 
     person("Thomas Lin", "Pedersen", , "thomasp85@gmail.com", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0002-5147-4711"))
@@ -20,10 +20,10 @@ Imports: cli, fs, glue, httpuv, later, lifecycle, otel, promises, R6,
         reqres (>= 1.1.0), rlang (>= 1.1.0), sodium, stats, stringi,
         utils, yaml
 Suggests: callr, covr, future, knitr, logger, rmarkdown, testthat (>=
-        3.0.0), withr
+        3.3.0), withr
 VignetteBuilder: knitr
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Collate: 'loggers.R' 'aaa.R' 'HandlerStack.R' 'Fire.R' 'PromiseStack.R'
         'additional_type_checks.R' 'fake_request.R' 'fiery-package.R'
         'import-standalone-obj-type.R'
@@ -31,9 +31,9 @@ Collate: 'loggers.R' 'aaa.R' 'HandlerStack.R' 'Fire.R' 'PromiseStack.R'
         'zzz.R'
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2025-11-10 08:21:14 UTC; thomas
+Packaged: 2025-11-18 09:29:24 UTC; thomas
 Author: Thomas Lin Pedersen [cre, aut] (ORCID:
     <https://orcid.org/0000-0002-5147-4711>)
 Maintainer: Thomas Lin Pedersen <thomasp85@gmail.com>
 Repository: CRAN
-Date/Publication: 2025-11-10 09:50:02 UTC
+Date/Publication: 2025-11-18 11:10:09 UTC

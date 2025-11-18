@@ -120,6 +120,14 @@ NULL
 
 #' @rdname loggers
 #' @export
+logger_silent <- function() {
+  function(event, message, request = NULL, time = Sys.time(), ...) {
+    invisible(NULL)
+  }
+}
+
+#' @rdname loggers
+#' @export
 logger_null <- function() {
   function(event, message, request = NULL, time = Sys.time(), ...) {
     if (event %in% c('error', 'warning', 'message')) {

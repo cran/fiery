@@ -1,3 +1,7 @@
+# fiery 1.4.1
+
+* Added `logger_silent()` which does completely nothing
+
 # fiery 1.4.0
 
 * Add support for OpenTelemetry through the otel package
