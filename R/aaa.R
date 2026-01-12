@@ -10,7 +10,7 @@ globalVariables(
 #' Select a random safe port
 #'
 #' This is a small utility function to get random safe ports to run your
-#' application on. It chooses a port within the range that cannot be registeret
+#' application on. It chooses a port within the range that cannot be registered
 #' to IANA and thus is safe to assume are not in use.
 #'
 #' @return An integer in the range 49152-65535
@@ -69,8 +69,9 @@ session_id_cookie <- function(name = "fiery_id", secure = FALSE) {
       name,
       id,
       http_only = TRUE,
+      path = "/",
       secure = secure,
-      same_site = "Strict"
+      same_site = if (secure) "None" else "Strict"
     )
     request$origin$HTTP_COOKIE <- paste0(
       c(request$origin$HTTP_COOKIE, paste0(name, "=", id)),
@@ -92,4 +93,9 @@ cheap_trace_back <- function() {
   recursive <- parents == seq_along(parents)
   parents[recursive] <- 0L
   list(call = calls, parent = parents)
+}
+
+safe_call_server <- function() {
+  private <- list(p_safe_call = function(x, ...) force(x))
+  list(clone = function() {})
 }

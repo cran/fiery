@@ -1,7 +1,7 @@
 Type: Package
 Package: fiery
 Title: A Lightweight and Flexible Web Framework
-Version: 1.4.1
+Version: 1.5.0
 Authors@R: 
     person("Thomas Lin", "Pedersen", , "thomasp85@gmail.com", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0002-5147-4711"))
@@ -17,7 +17,7 @@ URL: https://fiery.data-imaginist.com,
         https://github.com/thomasp85/fiery
 BugReports: https://github.com/thomasp85/fiery/issues
 Imports: cli, fs, glue, httpuv, later, lifecycle, otel, promises, R6,
-        reqres (>= 1.1.0), rlang (>= 1.1.0), sodium, stats, stringi,
+        reqres (>= 1.2.0), rlang (>= 1.1.0), sodium, stats, stringi,
         utils, yaml
 Suggests: callr, covr, future, knitr, logger, rmarkdown, testthat (>=
         3.3.0), withr
@@ -31,9 +31,9 @@ Collate: 'loggers.R' 'aaa.R' 'HandlerStack.R' 'Fire.R' 'PromiseStack.R'
         'zzz.R'
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2025-11-18 09:29:24 UTC; thomas
+Packaged: 2026-01-12 08:25:41 UTC; thomas
 Author: Thomas Lin Pedersen [cre, aut] (ORCID:
     <https://orcid.org/0000-0002-5147-4711>)
 Maintainer: Thomas Lin Pedersen <thomasp85@gmail.com>
 Repository: CRAN
-Date/Publication: 2025-11-18 11:10:09 UTC
+Date/Publication: 2026-01-12 09:00:02 UTC

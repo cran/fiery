@@ -1,3 +1,17 @@
+# fiery 1.5.0
+
+* More performant implementation of HandlerStack, DelayStack, and TimeStack.
+  These internal constructs are now implemented as closures instead of R6
+  classes.
+* More performant logging. Default is to not log as it is still somewhat
+  expensive. Formatting is now using glue-like formats but not glue and doesn't
+  allow expressions inside the format string
+* rename `logger_silent()` to `logger_void()``
+* Remove cli formatting of log messages
+* Request and Response objects are now unclassed before sending them to the
+  handlers. This will break code that checks the class of these. Use
+  `reqres::maybe_request()` to check for likeliness to Request objects instead.
+
 # fiery 1.4.1
 
 * Added `logger_silent()` which does completely nothing
